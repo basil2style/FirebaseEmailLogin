@@ -8,18 +8,21 @@
 
 import UIKit
 import Firebase
+import FirebaseDatabase
+import CoreLocation
 
 class ViewController: UIViewController {
 
     @IBOutlet weak var Username: UITextField!
     @IBOutlet weak var Password: UITextField!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+    
     }
-
-    override func didReceiveMemoryWarning() {
+      override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
@@ -31,6 +34,8 @@ class ViewController: UIViewController {
             
             if error != nil {
                 self.login()
+                
+                self.performSegue(withIdentifier:"ToMapList", sender: nil)
             }
             else {
                 print("User Created")
@@ -38,7 +43,8 @@ class ViewController: UIViewController {
             }
         })
     }
-    func login(){
+    
+       func login(){
         
         FIRAuth.auth()?.signIn(withEmail: Username.text!, password: Password.text!, completion: {
             (user,error) in
@@ -48,10 +54,16 @@ class ViewController: UIViewController {
             }
             else {
                 print("User Loggined")
+   //             let address = self.getCoordinate()
+     //           print("Latitude \(address.lat) & Longitude \(address.lon)")
+                
+                
+                
+                self.performSegue(withIdentifier:"ToMapList", sender: nil)
             }
             
         })
     }
+    
 
 }
-

@@ -43,6 +43,7 @@
                                 <state key="normal" title="Login / Create"/>
                                 <connections>
                                     <action selector="CreateAccount:" destination="BYZ-38-t0r" eventType="touchUpInside" id="95h-MB-DrB"/>
+                                    <segue destination="eGL-xA-bvK" kind="presentation" identifier="ToMapList" id="Abj-x5-Ohn"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -66,7 +67,34 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="567" y="146"/>
+            <point key="canvasLocation" x="-273" y="22"/>
+        </scene>
+        <!--MapView-->
+        <scene sceneID="GKa-Na-MBT">
+            <objects>
+                <viewController title="MapView" id="eGL-xA-bvK" customClass="MapViewController" customModule="EmailLogin" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="SRT-0R-6Oq"/>
+                        <viewControllerLayoutGuide type="bottom" id="fF8-5d-P4f"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="XNH-19-VjK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="UBq-fd-pos">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </mapView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="UBq-fd-pos" id="nqL-Nh-4UC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AF1-lk-gQR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="436" y="21.139430284857571"/>
         </scene>
     </scenes>
 </document>
