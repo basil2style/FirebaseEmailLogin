@@ -33,8 +33,17 @@ class ViewController: UIViewController {
             user,error in
             
             if error != nil {
-                self.login()
                 
+                let user = ["Email":user?.email! as Any ] as [String : Any]
+                
+                let databaseRef = FIRDatabase.database().reference().child("User")
+                let childRef = databaseRef.childByAutoId()
+                
+                //databaseRef.child("Users/").childByAutoId().setValue(user)
+                childRef.updateChildValues(user)
+ 
+                self.login()
+             
                 self.performSegue(withIdentifier:"ToMapList", sender: nil)
             }
             else {

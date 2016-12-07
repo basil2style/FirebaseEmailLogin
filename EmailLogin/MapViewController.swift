@@ -10,13 +10,16 @@ import UIKit
 import MapKit
 import CoreLocation
 import FirebaseDatabase
+import FirebaseAuth
 
 
-class MapViewController :UIViewController {
+class MapViewController :UIViewController,MKMapViewDelegate,CLLocationManagerDelegate{
     
     @IBOutlet weak var mapView: MKMapView!
     
-    var locationManager:CLLocationManager?
+    let locationManager = CLLocationManager()
+    let databaseRef = FIRDatabase.database().reference()
+    let annotation = MKPointAnnotation()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,48 +61,62 @@ class MapViewController :UIViewController {
         annotation.subtitle = "Toronto"
         
         mapView.addAnnotation(annotation) */
-        if locationManager == nil {
-        locationManager = CLLocationManager()
-        }
+    
+        self.locationManager.delegate = self
+        self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.startUpdatingLocation()
+        self.mapView.showsUserLocation = true
         
-        //locationManager!.delegate
-        locationManager!.requestAlwaysAuthorization()
-        
-        post()
+       // post()
         
         
     }
     
-    func post() {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+        post(location: location!)
+        let center = CLLocationCoordinate2D(latitude: (location?.coordinate.latitude)!, longitude: (location?.coordinate.longitude)!)
         
-        let address = getCoordinate()
-        let post = ["title":"Test" as String,"Latitude":address.lat as Double,"Longitude":address.lon as Double] as [String : Any]
+        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+        self.mapView.setRegion(region, animated: true)
         
-        let databaseRef = FIRDatabase.database().reference()
+        mapView.removeAnnotation(annotation)
+        annotation.coordinate = center
+        annotation.title = FIRAuth.auth()?.currentUser?.email
+        annotation.subtitle = "Toronto"
+        self.mapView.addAnnotation(annotation)
         
-        databaseRef.child("Posts").childByAutoId().setValue(post)
-        
-    }
-    func getCoordinate() -> (lat:Double,lon:Double) {
-        
-        let locManager = CLLocationManager()
-        locManager.requestWhenInUseAuthorization()
-        locManager.requestAlwaysAuthorization()
-        var currentLocation = CLLocation()
-        
-        if( CLLocationManager.authorizationStatus() == .authorizedAlways ||
-            CLLocationManager.authorizationStatus() == .authorizedAlways){
+        databaseRef.child("Locations").queryOrderedByKey().observe(.childAdded, with: {
+            snapshot in
             
-            currentLocation = locManager.location!
+            let email = (snapshot.value as? NSDictionary)?["Email"] as? String ?? ""
+            print(email)
             
-        }
+        })
         
-        return (currentLocation.coordinate.latitude,currentLocation.coordinate.longitude)
+        self.locationManager.startUpdatingLocation()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        
+        print("Errors:" + error.localizedDescription)
+    }
+    
+    
+    func post(location : CLLocation) {
+        
+        let currentUser = FIRAuth.auth()?.currentUser
+        let currentEmail = currentUser?.email
+        let currentUid = currentUser?.uid
+        
+       // let address = getCoordinate()
+        let post = ["Email":currentEmail! as String,"UserId":currentUid! as String,"Latitude":location.coordinate.latitude ,"Longitude":location.coordinate.longitude,"Timestamp":NSDate().timeIntervalSince1970*1000 ] as [String : Any]
+        
+       
+        //databaseRef.removeValue()
+        //databaseRef.child("Locations/").childByAutoId().setValue(post)
+        databaseRef.child("Locations/").child(currentUid!).updateChildValues(post)
         
     }
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 }
