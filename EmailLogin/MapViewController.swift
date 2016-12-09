@@ -82,7 +82,7 @@ class MapViewController :UIViewController,MKMapViewDelegate,CLLocationManagerDel
                 self.mapView.addAnnotation(self.annotation)
                 */
                 if (email != FIRAuth.auth()?.currentUser?.email){       // Checking if its current user or not
-                    self.mapView.removeAnnotation(tmpAnnotation)
+                    self.mapView.removeAnnotation(tmpAnnotation)  //removing the previous annotation
                     tmpAnnotation.title = email
                     let dateTime = String(describing: lastTime)
                     tmpAnnotation.subtitle = "Last Updated: "+dateTime
@@ -123,10 +123,10 @@ class MapViewController :UIViewController,MKMapViewDelegate,CLLocationManagerDel
         mapView.removeAnnotation(annotation)
         annotation.coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         
-        let currentUser = FIRAuth.auth()?.currentUser
-        let currentEmail = currentUser?.email
-        let currentUid = currentUser?.uid
-        let Timestamp = NSDate().timeIntervalSince1970*1000
+        let currentUser = FIRAuth.auth()?.currentUser //Current User
+        let currentEmail = currentUser?.email       //User email
+        let currentUid = currentUser?.uid   //Unique UserID
+        let Timestamp = NSDate().timeIntervalSince1970*1000  //Timestamp
       
         let date = Date()
         let calendar = Calendar.current
@@ -136,12 +136,13 @@ class MapViewController :UIViewController,MKMapViewDelegate,CLLocationManagerDel
         let seconds = calendar.component(.second, from: date)
         
         print("\(date)")
-        annotation.title = currentEmail
-        annotation.subtitle = "Last Updated: "+String(Timestamp)
+        annotation.title = currentEmail         //Annotation Title as current email
+        annotation.subtitle = "Last Updated: "+String(Timestamp)    // Subtitle as current timestamp
         self.mapView.addAnnotation(annotation)
-       // let address = getCoordinate()
+        // let address = getCoordinate()
+        //
         let post = ["Email":currentEmail! as String,"UserId":currentUid! as String,"Latitude":location.coordinate.latitude ,"Longitude":location.coordinate.longitude,"Timestamp":Timestamp] as [String : Any]
-        
+        //Publishing to Firebase "Locations/"
        
         //databaseRef.removeValue()
         //databaseRef.child("Locations/").childByAutoId().setValue(post)
