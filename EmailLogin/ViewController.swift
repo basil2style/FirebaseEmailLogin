@@ -11,6 +11,7 @@ import Firebase
 import FirebaseDatabase
 import CoreLocation
 
+//Sign In Page
 class ViewController: UIViewController {
 
     @IBOutlet weak var Username: UITextField!
@@ -26,13 +27,13 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+//Create Account button click
     @IBAction func CreateAccount(_ sender: Any) {
-        
+        //Firebase Authentication Create New User
         FIRAuth.auth()?.createUser(withEmail: Username.text!, password: Password.text!, completion: {
             user,error in
             
-            if error != nil {
+            if error != nil {   //If there is no error
                 
                 let user = ["Email":user?.email! as Any ] as [String : Any]
                 
@@ -44,11 +45,11 @@ class ViewController: UIViewController {
  
                 self.login()
              
-                self.performSegue(withIdentifier:"ToMapList", sender: nil)
+                self.performSegue(withIdentifier:"ToMapList", sender: nil)   //performing segue if everything went success
             }
             else {
                 print("User Created")
-                self.login()
+                self.login()        //call user login()
             }
         })
     }
@@ -68,7 +69,7 @@ class ViewController: UIViewController {
                 
                 
                 
-                self.performSegue(withIdentifier:"ToMapList", sender: nil)
+                self.performSegue(withIdentifier:"ToMapList", sender: nil)      //If the user login with email and password
             }
             
         })
